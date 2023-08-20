@@ -10,6 +10,10 @@ const art = require('../assets/images/art.png');
 const location = require('../assets/images/location.png');
 const directions = require('../assets/images/directions.png');
 const orgImg = require('../assets/images/organizationImage.png');
+const img1 = require('../assets/images/img1.png');
+const img2 = require('../assets/images/img2.png');
+
+const img3 = require('../assets/images/img3.png');
 
 export default {
   bg,
@@ -24,4 +28,7 @@ export default {
   location,
   directions,
   orgImg,
+  img1,
+  img2,
+  img3,
 };

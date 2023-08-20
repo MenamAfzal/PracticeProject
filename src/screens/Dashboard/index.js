@@ -9,6 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import {scale} from 'react-native-size-matters';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,14 +20,38 @@ import TileView from '../../components/TileView';
 import styles from './styles';
 import CalendarView from '../../components/CalendarView';
 import DASHBOARD_STRINGS from '../../constants/Strings';
+import colors from '../../assets/theme/colors';
+import ProfilePicView from '../../components/ProfilePicView';
+import CategoryView from '../../components/CategoryView/CategoryView';
 
+const Loader = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: colors.backgroundColors.black,
+        alignItems: 'center',
+      }}>
+      <ActivityIndicator
+        size={'large'}
+        color={colors.backgroundColors.primary}
+      />
+    </View>
+  );
+};
 const Dashboard = () => {
   const [isTruncated, setIsTruncated] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     askCalendarPermissions();
+  }, []);
+
+  useEffect(() => {
+    fakeApiCall();
   }, []);
 
   const askCalendarPermissions = () => {
@@ -53,6 +78,7 @@ const Dashboard = () => {
       };
 
       await RNCalendarEvents.saveEvent('Event', eventDetails);
+      showSuccessToast();
       console.log('Event added to calendar');
     } catch (error) {
       console.error('Error adding event to calendar', error);
@@ -88,13 +114,34 @@ const Dashboard = () => {
     );
   };
 
-  const showToast = () => {
+  const showToast = ({error, heading, description}) => {
     Toast.show({
       type: 'error',
       text1: 'Warning',
       text2: 'Please Select a Date First',
     });
   };
+
+  const showSuccessToast = () => {
+    Toast.show({
+      type: 'success',
+      text2: 'Event Added to calendar ssuccessfully!',
+    });
+  };
+
+  const fakeApiCall = () => {
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => {
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+      });
+  };
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -136,19 +183,9 @@ const Dashboard = () => {
         </View>
       </View>
       <TileView tileText="Participants" />
-      <Image style={styles.profileImage} source={icons.profile} />
+      <ProfilePicView />
       <TileView tileText="Categories" />
-      <View style={{flexDirection: 'row'}}>
-        <View style={styles.artTag}>
-          <Image source={icons.art} style={styles.label} />
-        </View>
-        <View style={styles.movieTag}>
-          <Image source={icons.movie} style={styles.movielabel} />
-        </View>
-        <View style={styles.movieTag}>
-          <Image source={icons.sport} style={styles.sportlabel} />
-        </View>
-      </View>
+      <CategoryView />
       <View style={styles.mainView}>
         <TouchableOpacity
           onPress={selectedDate ? addEventToCalendar : showToast}>
