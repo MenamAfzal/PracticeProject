@@ -96,8 +96,8 @@ const Dashboard = () => {
 
   // Code snippet to open map
   const openMap = () => {
-    const latitude = 6.465422;
-    const longitude = 3.406448;
+    const latitude = 51.758041;
+    const longitude = -1.25452;
     const label = 'Custom Location';
 
     const mapUrl = `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`;
